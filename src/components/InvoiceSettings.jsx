@@ -126,7 +126,7 @@ export default function InvoiceSettings({
                     onChange={(e) =>
                       handleInputChange("hourlyRate", e.target.value)
                     }
-                    placeholder="40"
+                    placeholder="Enter hourly rate"
                     min="0"
                     step="0.01"
                   />
