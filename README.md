@@ -1,3 +1,4 @@
+<img width="1911" height="989" alt="Screenshot 2026-04-15 at 2 07 48 AM 2" src="https://github.com/user-attachments/assets/6975a5e5-2b6a-4745-907e-bcaaf82550f4" />
 # Invoice Generator
 
 A professional invoice generator with template-based design and automatic calculations. Generate polished invoices with customizable hourly rates, work items, and payment details.
