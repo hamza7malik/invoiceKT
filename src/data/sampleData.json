@@ -1,0 +1,32 @@
+{
+  "yourName": "John Doe",
+  "hourlyRate": "50",
+  "clientName": "Acme Corporation",
+  "invoiceNumber": "INV-001",
+  "invoiceDate": "2026-04-14",
+  "weekStart": "2026-04-10",
+  "weekEnd": "2026-04-13",
+  "accountHolderName": "John Doe",
+  "iban": "GB82WEST12345698765432",
+  "accountNumber": "12345678",
+  "swiftCode": "AAAABBCC",
+  "bankName": "Sample Bank",
+  "bankAddress": "123 Main Street, City, Country",
+  "items": [
+    {
+      "id": 1,
+      "ticket": "Item-1: Task description",
+      "hours": 8.5
+    },
+    {
+      "id": 2,
+      "ticket": "Item-2: Task description",
+      "hours": 6.25
+    },
+    {
+      "id": 3,
+      "ticket": "Item-3: Task description",
+      "hours": 4.75
+    }
+  ]
+}

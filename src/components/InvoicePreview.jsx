@@ -13,10 +13,12 @@ export default function InvoicePreview({ data }) {
   );
 
   const hasPaymentDetails =
-    data.bankName ||
+    data.accountHolderName ||
+    data.iban ||
     data.accountNumber ||
-    data.routingNumber ||
-    data.accountHolder;
+    data.swiftCode ||
+    data.bankName ||
+    data.bankAddress;
 
   return (
     <div className="page-container">
@@ -101,10 +103,18 @@ export default function InvoicePreview({ data }) {
             <div className="payment-section">
               <div className="section-label">PAYMENT DETAILS</div>
               <div className="payment-grid">
-                {data.bankName && (
+                {data.accountHolderName && (
                   <div className="payment-row">
-                    <span className="payment-label">Bank Name:</span>
-                    <span className="payment-value">{data.bankName}</span>
+                    <span className="payment-label">Name:</span>
+                    <span className="payment-value">
+                      {data.accountHolderName}
+                    </span>
+                  </div>
+                )}
+                {data.iban && (
+                  <div className="payment-row">
+                    <span className="payment-label">IBAN:</span>
+                    <span className="payment-value">{data.iban}</span>
                   </div>
                 )}
                 {data.accountNumber && (
@@ -113,16 +123,22 @@ export default function InvoicePreview({ data }) {
                     <span className="payment-value">{data.accountNumber}</span>
                   </div>
                 )}
-                {data.routingNumber && (
+                {data.swiftCode && (
                   <div className="payment-row">
-                    <span className="payment-label">Routing Number:</span>
-                    <span className="payment-value">{data.routingNumber}</span>
+                    <span className="payment-label">SWIFT Code:</span>
+                    <span className="payment-value">{data.swiftCode}</span>
                   </div>
                 )}
-                {data.accountHolder && (
+                {data.bankName && (
                   <div className="payment-row">
-                    <span className="payment-label">Account Holder:</span>
-                    <span className="payment-value">{data.accountHolder}</span>
+                    <span className="payment-label">Bank Name:</span>
+                    <span className="payment-value">{data.bankName}</span>
+                  </div>
+                )}
+                {data.bankAddress && (
+                  <div className="payment-row">
+                    <span className="payment-label">Bank Address:</span>
+                    <span className="payment-value">{data.bankAddress}</span>
                   </div>
                 )}
               </div>

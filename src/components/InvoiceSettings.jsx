@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { pdf } from "@react-pdf/renderer";
-import InvoicePDF from "./InvoicePDF";
 
 export default function InvoiceSettings({
   data,
@@ -77,20 +75,14 @@ export default function InvoiceSettings({
     updateItem(index, { ...item, [field]: value });
   };
 
-  const handleDownloadPDF = async () => {
-    const blob = await pdf(<InvoicePDF data={data} />).toBlob();
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `invoice_${data.invoiceNumber || "draft"}.pdf`;
-    link.click();
-    URL.revokeObjectURL(url);
-  };
-
   return (
     <div className="input-panel">
       <div className="input-container">
-        <h2>Invoice Settings</h2>
+        <div className="app-branding">
+          <h1>invoiceKT</h1>
+        </div>
+
+        <h2 className="settings-heading">Invoice Settings</h2>
 
         <div className="form-section">
           <h3
@@ -313,6 +305,11 @@ export default function InvoiceSettings({
                       </button>
                     </div>
                   ))}
+                  <div className="form-actions">
+                    <button className="btn-link" onClick={clearItems}>
+                      Clear All Items
+                    </button>
+                  </div>
                 </div>
               )}
             </>
@@ -335,16 +332,27 @@ export default function InvoiceSettings({
             <>
               <div className="form-row">
                 <div className="form-group">
-                  <label>Bank Name</label>
+                  <label>Name</label>
                   <input
                     type="text"
-                    value={data.bankName}
+                    value={data.accountHolderName}
                     onChange={(e) =>
-                      handleInputChange("bankName", e.target.value)
+                      handleInputChange("accountHolderName", e.target.value)
                     }
-                    placeholder="Bank Name"
+                    placeholder="Account Holder Name"
                   />
                 </div>
+                <div className="form-group">
+                  <label>IBAN</label>
+                  <input
+                    type="text"
+                    value={data.iban}
+                    onChange={(e) => handleInputChange("iban", e.target.value)}
+                    placeholder="IBAN"
+                  />
+                </div>
+              </div>
+              <div className="form-row">
                 <div className="form-group">
                   <label>Account Number</label>
                   <input
@@ -356,42 +364,44 @@ export default function InvoiceSettings({
                     placeholder="Account Number"
                   />
                 </div>
+                <div className="form-group">
+                  <label>SWIFT Code</label>
+                  <input
+                    type="text"
+                    value={data.swiftCode}
+                    onChange={(e) =>
+                      handleInputChange("swiftCode", e.target.value)
+                    }
+                    placeholder="SWIFT Code"
+                  />
+                </div>
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label>Routing Number</label>
+                  <label>Bank Name</label>
                   <input
                     type="text"
-                    value={data.routingNumber}
+                    value={data.bankName}
                     onChange={(e) =>
-                      handleInputChange("routingNumber", e.target.value)
+                      handleInputChange("bankName", e.target.value)
                     }
-                    placeholder="Routing Number"
+                    placeholder="Bank Name"
                   />
                 </div>
                 <div className="form-group">
-                  <label>Account Holder</label>
+                  <label>Bank Address</label>
                   <input
                     type="text"
-                    value={data.accountHolder}
+                    value={data.bankAddress}
                     onChange={(e) =>
-                      handleInputChange("accountHolder", e.target.value)
+                      handleInputChange("bankAddress", e.target.value)
                     }
-                    placeholder="Account Holder Name"
+                    placeholder="Bank Address"
                   />
                 </div>
               </div>
             </>
           )}
-        </div>
-
-        <div className="form-actions">
-          <button className="btn-secondary" onClick={handleDownloadPDF}>
-            Download PDF
-          </button>
-          <button className="btn-link" onClick={clearItems}>
-            Clear All Items
-          </button>
         </div>
       </div>
     </div>
