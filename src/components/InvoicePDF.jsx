@@ -206,18 +206,36 @@ export default function InvoicePDF({ data }) {
     return `${month}/${day}/${year}`;
   };
 
-  const formatWeekRange = (startDateString) => {
-    if (!startDateString) return "";
+  const formatWeekRange = (startDateString, endDateString) => {
+    if (!startDateString || !endDateString) return "";
     const start = new Date(startDateString);
-    const end = new Date(start);
-    end.setDate(end.getDate() + 6);
+    const end = new Date(endDateString);
 
-    const startMonth = String(start.getMonth() + 1).padStart(2, "0");
-    const startDay = String(start.getDate()).padStart(2, "0");
-    const endMonth = String(end.getMonth() + 1).padStart(2, "0");
-    const endDay = String(end.getDate()).padStart(2, "0");
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
 
-    return `${startMonth}/${startDay} - ${endMonth}/${endDay}`;
+    const startMonth = monthNames[start.getMonth()];
+    const startDay = start.getDate();
+    const endMonth = monthNames[end.getMonth()];
+    const endDay = end.getDate();
+    const year = end.getFullYear();
+
+    if (start.getMonth() === end.getMonth()) {
+      return `${startMonth} ${startDay}–${endDay}, ${year}`;
+    }
+    return `${startMonth} ${startDay} – ${endMonth} ${endDay}, ${year}`;
   };
 
   const formatCurrency = (amount) => {
@@ -268,11 +286,11 @@ export default function InvoicePDF({ data }) {
                 {formatDate(data.invoiceDate)}
               </Text>
             </View>
-            {data.weekStart && (
+            {data.weekStart && data.weekEnd && (
               <View style={styles.metaRow}>
                 <Text style={styles.metaLabel}>BILLING PERIOD</Text>
                 <Text style={styles.metaValue}>
-                  {formatWeekRange(data.weekStart)}
+                  {formatWeekRange(data.weekStart, data.weekEnd)}
                 </Text>
               </View>
             )}

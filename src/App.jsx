@@ -11,6 +11,7 @@ function App() {
     invoiceNumber: "",
     invoiceDate: "",
     weekStart: "",
+    weekEnd: "",
     bankName: "",
     accountNumber: "",
     routingNumber: "",

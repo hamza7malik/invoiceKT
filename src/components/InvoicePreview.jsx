@@ -45,11 +45,11 @@ export default function InvoicePreview({ data }) {
               <span className="meta-label">INVOICE DATE</span>
               <span className="meta-value">{formatDate(data.invoiceDate)}</span>
             </div>
-            {data.weekStart && (
+            {data.weekStart && data.weekEnd && (
               <div className="meta-row">
                 <span className="meta-label">BILLING PERIOD</span>
                 <span className="meta-value">
-                  {formatWeekRange(data.weekStart)}
+                  {formatWeekRange(data.weekStart, data.weekEnd)}
                 </span>
               </div>
             )}

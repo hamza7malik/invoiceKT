@@ -11,11 +11,10 @@ export function formatDate(dateString) {
   return `${month}/${day}/${year}`;
 }
 
-export function formatWeekRange(startDateString) {
-  if (!startDateString) return "";
+export function formatWeekRange(startDateString, endDateString) {
+  if (!startDateString || !endDateString) return "";
   const start = new Date(startDateString);
-  const end = new Date(start);
-  end.setDate(end.getDate() + 6);
+  const end = new Date(endDateString);
 
   const monthNames = [
     "Jan",

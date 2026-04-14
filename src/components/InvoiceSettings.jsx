@@ -169,13 +169,25 @@ export default function InvoiceSettings({
                     }
                   />
                 </div>
+              </div>
+              <div className="form-row">
                 <div className="form-group">
-                  <label>Week Start</label>
+                  <label>Billing Period Start</label>
                   <input
                     type="date"
                     value={data.weekStart}
                     onChange={(e) =>
                       handleInputChange("weekStart", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Billing Period End</label>
+                  <input
+                    type="date"
+                    value={data.weekEnd}
+                    onChange={(e) =>
+                      handleInputChange("weekEnd", e.target.value)
                     }
                   />
                 </div>
@@ -205,7 +217,7 @@ export default function InvoiceSettings({
                     type="text"
                     value={ticketInput}
                     onChange={(e) => setTicketInput(e.target.value)}
-                    placeholder="e.g., BENU-171- Coach web searches"
+                    placeholder="e.g., Project task description"
                   />
                 </div>
                 <div className="form-group">
