@@ -1,6 +1,4 @@
-/* ========================================
-   🎨 GLOBAL STYLES - Modern SaaS Theme
-   ======================================== */
+/* Global Styles */
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
@@ -22,9 +20,7 @@ body {
   min-height: 100vh;
 }
 
-/* ========================================
-   📋 INPUT PANEL - SaaS Style
-   ======================================== */
+/* Input Panel */
 
 .input-panel {
   background: #ffffff;
@@ -253,9 +249,7 @@ body {
   text-decoration: underline;
 }
 
-/* ========================================
-   📋 ITEMS LIST
-   ======================================== */
+/* Items List */
 
 .theme-colors-container {
   margin-bottom: 8px;
@@ -565,9 +559,7 @@ body {
   border-top: 1px solid #dadada;
 }
 
-/* ========================================
-   📄 PAGE CONTAINER
-   ======================================== */
+/* Preview Container */
 
 .page-container {
   flex: 0 0 60%;
@@ -689,9 +681,7 @@ body {
   }
 }
 
-/* ========================================
-   📦 INVOICE CONTAINER
-   ======================================== */
+/* Invoice Preview */
 
 .invoice-container {
   background: #ffffff;
@@ -767,9 +757,7 @@ body {
   align-items: center;
 }
 
-/* ========================================
-   📊 TABLE
-   ======================================== */
+/* Table */
 
 .invoice-table {
   width: 100%;
@@ -809,9 +797,7 @@ body {
   text-align: right;
 }
 
-/* ========================================
-   💰 TOTALS
-   ======================================== */
+/* Totals */
 
 .totals-section {
   display: flex;
@@ -843,9 +829,7 @@ body {
   text-align: right;
 }
 
-/* ========================================
-   💳 PAYMENT
-   ======================================== */
+/* Payment Details */
 
 .payment-section {
   margin-top: 16px;
@@ -877,9 +861,7 @@ body {
   flex: 1;
 }
 
-/* ========================================
-   📱 RESPONSIVE
-   ======================================== */
+/* Responsive */
 
 .mobile-banner {
   display: none;
