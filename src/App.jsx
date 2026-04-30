@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PDFViewer, pdf } from "@react-pdf/renderer";
 import "./App.css";
 import InvoiceSettings from "./components/InvoiceSettings";
+import { useIsMobile } from "./hooks/useMediaQuery";
 import InvoicePDF, {
   PAGE_WIDTH,
   PAGE_HEIGHT,
@@ -10,17 +11,22 @@ import sampleData from "./data/sampleData.json";
 import { templates, defaultTemplate } from "./templates";
 
 function App() {
+  const isMobile = useIsMobile();
   const [invoiceData, setInvoiceData] = useState(sampleData);
   const [currentTemplate] = useState(defaultTemplate); // Future: allow template selection
   const [currentTheme, setCurrentTheme] = useState(
     templates[currentTemplate].defaultTheme,
   );
+  const [customColor, setCustomColor] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const updateInvoiceData = (newData) => {
+    setIsLoading(true);
     setInvoiceData((prev) => ({ ...prev, ...newData }));
   };
 
   const addItem = (item) => {
+    setIsLoading(true);
     setInvoiceData((prev) => ({
       ...prev,
       items: [...prev.items, item],
@@ -28,6 +34,7 @@ function App() {
   };
 
   const updateItem = (index, updatedItem) => {
+    setIsLoading(true);
     setInvoiceData((prev) => ({
       ...prev,
       items: prev.items.map((item, i) => (i === index ? updatedItem : item)),
@@ -35,6 +42,7 @@ function App() {
   };
 
   const deleteItem = (index) => {
+    setIsLoading(true);
     setInvoiceData((prev) => ({
       ...prev,
       items: prev.items.filter((_, i) => i !== index),
@@ -42,6 +50,7 @@ function App() {
   };
 
   const reorderItems = (startIndex, endIndex) => {
+    setIsLoading(true);
     setInvoiceData((prev) => {
       const items = [...prev.items];
       const [removed] = items.splice(startIndex, 1);
@@ -51,10 +60,49 @@ function App() {
   };
 
   const clearItems = () => {
+    setIsLoading(true);
     setInvoiceData((prev) => ({
       ...prev,
       items: [],
     }));
+  };
+
+  const handleThemeChange = (themeKey) => {
+    setIsLoading(true);
+    setCurrentTheme(themeKey);
+    setCustomColor(null); // Reset custom color when selecting preset
+  };
+
+  const handleCustomColorChange = (color) => {
+    setIsLoading(true);
+    setCustomColor(color);
+    setCurrentTheme("custom");
+  };
+
+  // Reset loading state after data changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [invoiceData, currentTheme, customColor]);
+
+  // Get the active theme object
+  const getActiveTheme = () => {
+    if (currentTheme === "custom" && customColor) {
+      return {
+        name: "Custom",
+        colors: {
+          primary: customColor,
+          secondary: customColor,
+          text: "#222222",
+          lightText: "#555555",
+          border: "#dadada",
+          background: "#f0f0f0",
+        },
+      };
+    }
+    return templates[currentTemplate].themes[currentTheme];
   };
 
   const handleDownloadPDF = async () => {
@@ -79,41 +127,61 @@ function App() {
         deleteItem={deleteItem}
         reorderItems={reorderItems}
         clearItems={clearItems}
+        currentTheme={currentTheme}
+        handleThemeChange={handleThemeChange}
+        themes={templates[currentTemplate].themes}
+        customColor={customColor}
+        handleCustomColorChange={handleCustomColorChange}
+        isMobile={isMobile}
       />
       <div className="pdf-preview-container">
-        <button className="btn-download" onClick={handleDownloadPDF}>
-          Download PDF
-        </button>
+        {isMobile && (
+          <div className="mobile-banner">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>
+            <span>View on desktop for best experience</span>
+          </div>
+        )}
 
-        <div className="theme-swatches">
-          {Object.entries(templates[currentTemplate].themes).map(
-            ([key, theme]) => (
-              <button
-                key={key}
-                className={`theme-swatch ${currentTheme === key ? "active" : ""}`}
-                style={{ backgroundColor: theme.colors.primary }}
-                onClick={() => setCurrentTheme(key)}
-                title={theme.name}
-              />
-            ),
-          )}
-        </div>
+        {!isMobile && (
+          <button className="btn-download" onClick={handleDownloadPDF}>
+            Download PDF
+          </button>
+        )}
 
         <div className="pdf-viewer-wrapper">
+          {isLoading && (
+            <div className="pdf-loading-overlay">
+              <div className="pdf-spinner"></div>
+            </div>
+          )}
           <PDFViewer
             showToolbar={false}
             style={{
               width: "100%",
               height: "100%",
               border: "none",
+              opacity: isLoading ? 0 : 1,
+              transition: "opacity 0.2s ease-in-out",
             }}
           >
-            <InvoicePDF
-              data={invoiceData}
-              theme={templates[currentTemplate].themes[currentTheme]}
-            />
+            <InvoicePDF data={invoiceData} theme={getActiveTheme()} />
           </PDFViewer>
         </div>
+
+        {isMobile && (
+          <button className="btn-download-mobile" onClick={handleDownloadPDF}>
+            Download PDF
+          </button>
+        )}
       </div>
     </div>
   );

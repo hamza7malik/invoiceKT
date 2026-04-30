@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { HexColorPicker } from "react-colorful";
 
 export default function InvoiceSettings({
   data,
@@ -8,15 +9,48 @@ export default function InvoiceSettings({
   deleteItem,
   reorderItems,
   clearItems,
+  currentTheme,
+  handleThemeChange,
+  themes,
+  customColor,
+  handleCustomColorChange,
+  isMobile,
 }) {
   const [ticketInput, setTicketInput] = useState("");
   const [hoursInput, setHoursInput] = useState("");
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [previewColor, setPreviewColor] = useState(null);
+  const colorPickerRef = useRef(null);
   const [expandedSections, setExpandedSections] = useState({
+    branding: true,
     basic: true,
     workItems: true,
     payment: true,
   });
   const [draggedIndex, setDraggedIndex] = useState(null);
+
+  // Close color picker when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        colorPickerRef.current &&
+        !colorPickerRef.current.contains(event.target)
+      ) {
+        // Commit the preview color before closing
+        if (previewColor) {
+          handleCustomColorChange(previewColor);
+        }
+        setShowColorPicker(false);
+        setPreviewColor(null);
+      }
+    };
+
+    if (showColorPicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [showColorPicker, previewColor, handleCustomColorChange]);
 
   const toggleSection = (section) => {
     setExpandedSections((prev) => ({
@@ -86,6 +120,110 @@ export default function InvoiceSettings({
 
         <div className="form-section">
           <h3
+            onClick={() => toggleSection("branding")}
+            className="collapsible-header"
+          >
+            <span>Branding & Theme</span>
+            <span
+              className={`chevron ${expandedSections.branding ? "expanded" : ""}`}
+            >
+              ›
+            </span>
+          </h3>
+          <div
+            className={`collapsible-content ${expandedSections.branding ? "" : "collapsed"}`}
+          >
+            <div>
+              <div className="theme-colors-container">
+                <label className="theme-label">Color Theme</label>
+                <div className="theme-swatches-inline">
+                  <div className="color-picker-wrapper" ref={colorPickerRef}>
+                    <button
+                      type="button"
+                      className={`theme-swatch-round custom-picker ${currentTheme === "custom" ? "active" : ""}`}
+                      onClick={() => {
+                        setPreviewColor(customColor || "#8b5cf6");
+                        setShowColorPicker(!showColorPicker);
+                      }}
+                      title="Custom Color"
+                    >
+                      {(currentTheme === "custom" && customColor) ||
+                      previewColor ? (
+                        <div
+                          className="custom-color-preview"
+                          style={{
+                            backgroundColor: previewColor || customColor,
+                          }}
+                        />
+                      ) : (
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                        >
+                          <path
+                            d="M8 2.5C7.72 2.5 7.5 2.72 7.5 3V7.5H3C2.72 7.5 2.5 7.72 2.5 8C2.5 8.28 2.72 8.5 3 8.5H7.5V13C7.5 13.28 7.72 13.5 8 13.5C8.28 13.5 8.5 13.28 8.5 13V8.5H13C13.28 8.5 13.5 8.28 13.5 8C13.5 7.72 13.28 7.5 13 7.5H8.5V3C8.5 2.72 8.28 2.5 8 2.5Z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                      )}
+                    </button>
+                    {showColorPicker && (
+                      <div className="color-picker-popover">
+                        <HexColorPicker
+                          color={previewColor || customColor || "#8b5cf6"}
+                          onChange={setPreviewColor}
+                        />
+                        <div className="color-picker-input-wrapper">
+                          <label className="hex-label">HEX</label>
+                          <input
+                            type="text"
+                            className="hex-input"
+                            value={previewColor || customColor || "#8b5cf6"}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (/^#[0-9A-F]{6}$/i.test(value)) {
+                                setPreviewColor(value);
+                              }
+                            }}
+                            maxLength={7}
+                            placeholder="#8b5cf6"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          className="color-apply-btn"
+                          onClick={() => {
+                            if (previewColor) {
+                              handleCustomColorChange(previewColor);
+                            }
+                            setShowColorPicker(false);
+                            setPreviewColor(null);
+                          }}
+                        >
+                          Apply Color
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  {Object.entries(themes).map(([key, theme]) => (
+                    <button
+                      key={key}
+                      className={`theme-swatch-round ${currentTheme === key ? "active" : ""}`}
+                      style={{ backgroundColor: theme.colors.primary }}
+                      onClick={() => handleThemeChange(key)}
+                      title={theme.name}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="form-section">
+          <h3
             onClick={() => toggleSection("basic")}
             className="collapsible-header"
           >
@@ -96,8 +234,10 @@ export default function InvoiceSettings({
               ›
             </span>
           </h3>
-          {expandedSections.basic && (
-            <>
+          <div
+            className={`collapsible-content ${expandedSections.basic ? "" : "collapsed"}`}
+          >
+            <div>
               <div className="form-row">
                 <div className="form-group">
                   <label>Your Name</label>
@@ -184,8 +324,8 @@ export default function InvoiceSettings({
                   />
                 </div>
               </div>
-            </>
-          )}
+            </div>
+          </div>
         </div>
 
         <div className="form-section">
@@ -200,8 +340,10 @@ export default function InvoiceSettings({
               ›
             </span>
           </h3>
-          {expandedSections.workItems && (
-            <>
+          <div
+            className={`collapsible-content ${expandedSections.workItems ? "" : "collapsed"}`}
+          >
+            <div>
               <div className="form-row">
                 <div className="form-group" style={{ flex: 2 }}>
                   <label>Ticket/Description</label>
@@ -237,14 +379,41 @@ export default function InvoiceSettings({
                     <div
                       key={index}
                       className="item-row"
-                      draggable
+                      draggable={!isMobile}
                       onDragStart={(e) => handleDragStart(e, index)}
                       onDragOver={handleDragOver}
                       onDrop={(e) => handleDrop(e, index)}
                     >
-                      <div className="drag-handle" title="Drag to reorder">
-                        ⋮⋮
-                      </div>
+                      {!isMobile && (
+                        <div className="drag-handle" title="Drag to reorder">
+                          ⋮⋮
+                        </div>
+                      )}
+                      {isMobile && (
+                        <div className="mobile-reorder-buttons">
+                          <button
+                            className="btn-reorder"
+                            onClick={() =>
+                              index > 0 && reorderItems(index, index - 1)
+                            }
+                            disabled={index === 0}
+                            title="Move up"
+                          >
+                            ▲
+                          </button>
+                          <button
+                            className="btn-reorder"
+                            onClick={() =>
+                              index < data.items.length - 1 &&
+                              reorderItems(index, index + 1)
+                            }
+                            disabled={index === data.items.length - 1}
+                            title="Move down"
+                          >
+                            ▼
+                          </button>
+                        </div>
+                      )}
                       <div className="item-content">
                         <input
                           type="text"
@@ -312,8 +481,8 @@ export default function InvoiceSettings({
                   </div>
                 </div>
               )}
-            </>
-          )}
+            </div>
+          </div>
         </div>
 
         <div className="form-section">
@@ -328,8 +497,10 @@ export default function InvoiceSettings({
               ›
             </span>
           </h3>
-          {expandedSections.payment && (
-            <>
+          <div
+            className={`collapsible-content ${expandedSections.payment ? "" : "collapsed"}`}
+          >
+            <div>
               <div className="form-row">
                 <div className="form-group">
                   <label>Name</label>
@@ -400,8 +571,8 @@ export default function InvoiceSettings({
                   />
                 </div>
               </div>
-            </>
-          )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
